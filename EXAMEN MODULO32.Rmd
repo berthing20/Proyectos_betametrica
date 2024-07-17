@@ -1,0 +1,119 @@
+---
+title: "EXAMENMODULO3"
+author: "Berthing Gutierrez"
+date: "16/7/2024"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+## SECCION A
+set.seed(123)
+anos <- 1:20
+oferta_monetaria <- rnorm(20, mean = 1000, sd = 100)
+exportaciones <- rnorm(20, mean = 500, sd = 50)
+
+# Calculamos las tasas de crecimiento
+tasa_crecimiento_om <- diff(oferta_monetaria) / oferta_monetaria[-length(oferta_monetaria)]
+tasa_crecimiento_exp <- diff(exportaciones) / exportaciones[-length(exportaciones)]
+
+# Ajustamos modelos de regresión lineal
+modelo_om <- lm(tasa_crecimiento_om ~ anos[-1])
+modelo_exp <- lm(tasa_crecimiento_exp ~ anos[-1])
+
+# Resultados
+summary(modelo_om)
+summary(modelo_exp)
+## SECCION B
+set.seed(456)
+X1 <- rnorm(100, mean = 50, sd = 10)
+X2 <- rnorm(100, mean = 30, sd = 5)
+Y <- 2 + 0.5*X1 + 0.3*X2 + rnorm(100, mean = 0, sd = 5)
+
+# Ajustamos el modelo de regresión múltiple
+modelo_multiple <- lm(Y ~ X1 + X2)
+
+# Resumen del modelo
+summary(modelo_multiple)
+
+# Pruebas de autocorrelación
+library(lmtest)
+dwtest(modelo_multiple)
+
+# Prueba de heterocedasticidad
+bptest(modelo_multiple)
+
+# Prueba de multicolinealidad
+library(car)
+vif(modelo_multiple)
+
+# Prueba de estabilidad
+library(strucchange)
+sctest(modelo_multiple)
+```
+## Algunos comentarios
+
+Sección A:
+
+Oferta Monetaria:
+
+Tasa de crecimiento promedio: -0.001294 (coeficiente de anos[-1])
+Este valor no es estadísticamente significativo (p-value = 0.844)
+R-cuadrado muy bajo (0.002328), indicando que el modelo no explica bien la variabilidad
+
+
+Exportaciones:
+
+Tasa de crecimiento promedio: -0.002859 (coeficiente de anos[-1])
+Este valor tampoco es estadísticamente significativo (p-value = 0.572)
+R-cuadrado también muy bajo (0.01917)
+
+
+
+Comentario: Las tasas de crecimiento encontradas son negativas para ambas variables, pero no son estadísticamente significativas. Los modelos tienen un ajuste muy pobre.
+Sección B:
+
+Regresión múltiple:
+
+Ambas variables X1 y X2 son estadísticamente significativas
+R-cuadrado ajustado de 0.5913, indicando un ajuste moderado
+
+
+Pruebas:
+
+Autocorrelación (Durbin-Watson): p-value = 0.9023, no hay evidencia de autocorrelación
+Heterocedasticidad (Breusch-Pagan): p-value = 0.332, no hay evidencia de heterocedasticidad
+Multicolinealidad (VIF): valores cercanos a 1, indicando baja multicolinealidad
+Estabilidad (M-fluctuation test): p-value = 0.7435, sugiere estabilidad en el modelo
+
+
+
+Comentarios adicionales:
+
+No se menciona específicamente qué método se utilizó para atenuar, pero las pruebas realizadas abordan los problemas comunes en regresión.
+El contraste de estabilidad utilizado fue el M-fluctuation test.
+Los resultados sugieren que el modelo de regresión múltiple es adecuado y cumple con los supuestos básicos de regresión lineal.
